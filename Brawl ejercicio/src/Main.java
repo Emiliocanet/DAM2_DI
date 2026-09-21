@@ -12,10 +12,10 @@ public class Main {
         brawlers.add(new Epico("Piper", 2500, 1500));
         brawlers.add(new Epico("Bibi", 4500, 1100));
 
-        for (int i = 0; i < brawlers.size(); i++) {
-            brawlers.get(i).mostrarDatos();
-            brawlers.get(i).atacar();
-            brawlers.get(i).superAtaque();
+        for (Brawler b : brawlers) {
+            b.mostrarDatos();
+            b.atacar();
+            b.superAtaque();
             System.out.println();
         }
     }
