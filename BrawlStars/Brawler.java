@@ -15,10 +15,12 @@ public abstract class Brawler {
         return vida;
     }
 
+    // Suma vida al brawler
     public void curar(int cantidad) {
         vida = vida + cantidad;
     }
 
+    // Resta vida al brawler, sin bajar de 0
     public void recibirDamage(int cantidad) {
         vida = vida - cantidad;
         if (vida < 0) {
@@ -26,8 +28,10 @@ public abstract class Brawler {
         }
     }
 
+    // Cada tipo de brawler hace una acción distinta en el combate
     public abstract void accion(Brawler rival);
 
+    // Formato con el que se muestra un brawler: [Nombre:vida]
     @Override
     public String toString() {
         return "[" + nombre + ":" + vida + "]";
