@@ -5,94 +5,57 @@ public class Main {
 
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
+
+        // La lista de brawlers es la misma para todos los usuarios y todas las sesiones
         ArrayList<Brawler> brawlers = new ArrayList<>();
+
+        // Usuarios registrados: nombre y contraseña
+        ArrayList<Usuario> usuarios = new ArrayList<>();
+        usuarios.add(new Admin("admin", "admin"));
+        usuarios.add(new Guest("guest", "guest"));
 
         int opcion = 0;
 
-        while (opcion != 5) {
-            System.out.println("1. Ver brawlers");
-            System.out.println("2. Crear brawler legendario");
-            System.out.println("3. Crear brawler épico");
-            System.out.println("4. Combatir");
-            System.out.println("5. Salir");
+        // Pantalla de inicio: se vuelve a ella cada vez que se cierra sesión
+        while (opcion != 2) {
+            System.out.println("1. Iniciar sesión");
+            System.out.println("2. Salir");
             System.out.println();
             System.out.print("OPCION: ");
             opcion = Integer.parseInt(sc.nextLine());
             System.out.println();
 
             if (opcion == 1) {
-                // ---------- VER LOS BRAWLERS ----------
-                if (brawlers.isEmpty()) {
-                    System.out.println("Todavía no hay brawlers creados...");
-                } else {
-                    for (Brawler b : brawlers) {
-                        System.out.println(b);
-                    }
-                }
-                System.out.println();
-
-            } else if (opcion == 2) {
-                // ---------- CREAR BRAWLER LEGENDARIO ----------
-                System.out.print("Nombre: ");
+                System.out.print("Usuario: ");
                 String nombre = sc.nextLine();
-                System.out.print("Vida: ");
-                int vida = Integer.parseInt(sc.nextLine());
-                System.out.print("Daño: ");
-                int damage = Integer.parseInt(sc.nextLine());
-
-                brawlers.add(new Legendario(nombre, vida, damage));
+                System.out.print("Contraseña: ");
+                String password = sc.nextLine();
                 System.out.println();
 
-            } else if (opcion == 3) {
-                // ---------- CREAR BRAWLER EPICO ----------
-                System.out.print("Nombre: ");
-                String nombre = sc.nextLine();
-                System.out.print("Vida: ");
-                int vida = Integer.parseInt(sc.nextLine());
-                System.out.print("Suministros: ");
-                int suministros = Integer.parseInt(sc.nextLine());
+                Usuario usuario = buscarUsuario(usuarios, nombre, password);
 
-                brawlers.add(new Epico(nombre, vida, suministros));
-                System.out.println();
-
-            } else if (opcion == 4) {
-                // ---------- COMBATE ----------
-                System.out.print("Nombre del brawler 1: ");
-                Brawler b1 = buscarBrawler(brawlers, sc.nextLine());
-                System.out.print("Nombre del brawler 2: ");
-                Brawler b2 = buscarBrawler(brawlers, sc.nextLine());
-
-                if (b1 == null || b2 == null) {
-                    System.out.println("Uno de los brawlers no se ha encontrado...");
+                if (usuario == null) {
+                    System.out.println("Usuario o contraseña incorrectos...");
+                    System.out.println();
                 } else {
-                    // Inician asi
-                    System.out.println(b1);
-                    System.out.println(b2);
+                    System.out.println("Bienvenido, " + usuario.getNombre());
                     System.out.println();
-
-                    // Ahora hace la accion el primer brawler
-                    b1.accion(b2);
-                    System.out.println(b2);
-                    System.out.println();
-
-                    //Ahora tocaria el segundo brawler
-                    b2.accion(b1);
-                    System.out.println(b1);
+                    // Cada usuario abre su propio menú (polimorfismo)
+                    usuario.menu(brawlers, sc);
                 }
-                System.out.println();
 
-            } else if (opcion != 5) {
+            } else if (opcion != 2) {
                 System.out.println("Opción no válida");
                 System.out.println();
             }
         }
     }
 
-    // Busca un brawler por su nombre. Si no lo encuentra, devuelve null
-    public static Brawler buscarBrawler(ArrayList<Brawler> brawlers, String nombre) {
-        for (Brawler b : brawlers) {
-            if (b.getNombre().equals(nombre)) {
-                return b;
+    // Busca un usuario con ese nombre y esa contraseña. Si no existe, devuelve null
+    public static Usuario buscarUsuario(ArrayList<Usuario> usuarios, String nombre, String password) {
+        for (Usuario u : usuarios) {
+            if (u.getNombre().equals(nombre) && u.comprobarPassword(password)) {
+                return u;
             }
         }
         return null;
